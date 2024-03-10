@@ -135,6 +135,38 @@ for (i in 1:10){
   write.table(maize_chr_decreasing,file= maize_decreasing, row.names = FALSE, sep = "\t", col.names = TRUE, quote = FALSE)
 }
 ```
+
+```{r}
+## Sort data in order of increasing position values
+## teosinte
+
+dir.create("teosinte")
+
+for (i in 1:10){
+  #tO filter Chromosome "i" data in teosinte_snp based on the "Chromosome" column
+  teosinte_chr <- filter(teosinte_snp,Chromosome %in% c(i))
+  #Sort generated files based on the "Position" column in increasing order and  convert "Position" column to character, then to numeric
+  teosinte_chr_increasing <- teosinte_chr[order(as.numeric(as.character(teosinte_chr$Position))),]
+  #Create corresponding files based on increasing position and Chromosome "i"
+  teosinte_increasing <- paste("teosinte/teosinte_increasing_chr",i,".txt", sep="")
+  #Export data frame to files corresponding to each Chromosome "i" and based on increasing position values
+  write.table(teosinte_chr_increasing,file= teosinte_increasing, row.names = FALSE, sep = "\t", col.names = TRUE, quote = FALSE)
+  
+#Sort data for each chromosome with SNPs ordered based on decreasing position values and with missing data encoded by this symbol: -
+  
+  #Sort teosinte_chr files based on the "Position" column in decreasing order
+    teosinte_chr_decreasing_position <- mixedsort(as.character(teosinte_chr$Position), decreasing = TRUE)
+  teosinte_chr_decreasing <- teosinte_chr
+  teosinte_chr_decreasing$Position <- teosinte_chr_decreasing_position
+  #Replace "?" with "-"
+  teosinte_chr_decreasing[teosinte_chr_decreasing=="?/?"] <- "-/-"
+  #Create corresponding files based on decreasing position and Chromosome "i"
+  teosinte_decreasing <- paste("teosinte/teosinte_decreasing_chr",i,".txt", sep="")
+  #Export data frame to files corresponding to each Chromosome "i" and based on decreasing position values
+  write.table(teosinte_chr_decreasing,file= teosinte_decreasing, row.names = FALSE, sep = "\t", col.names = TRUE, quote = FALSE)
+}
+```
+
 ##Part II: Visualization
 
 ```{r}
@@ -349,8 +381,10 @@ SNP_Data <- ifelse(maize_teosinte_snp$Genotype == "AA", "Homozygous",
                    ifelse(maize_teosinte_snp$Genotype == "BB", "Homozygous",
                           ifelse(maize_teosinte_snp$Genotype == "AB", "Heterozygous", 
                                  "Missing")))
+```
 
 
+```{r}
 # Subset vectors to match the length of Chromosome and Position
 Chromosome <- Chromosome[1:n]
 Position <- Position[1:n]

@@ -1644,6 +1644,47 @@ for (i in 1:10){
 
 ## Warning in order(as.numeric(as.character(maize_chr$Position))): NAs introduced
 ## by coercion</code></pre>
+<pre class="r"><code>## Sort data in order of increasing position values
+## teosinte
+
+dir.create(&quot;teosinte&quot;)</code></pre>
+<pre><code>## Warning in dir.create(&quot;teosinte&quot;): &#39;teosinte&#39; already exists</code></pre>
+<pre class="r"><code>for (i in 1:10){
+  #tO filter Chromosome &quot;i&quot; data in teosinte_snp based on the &quot;Chromosome&quot; column
+  teosinte_chr &lt;- filter(teosinte_snp,Chromosome %in% c(i))
+  #Sort generated files based on the &quot;Position&quot; column in increasing order and  convert &quot;Position&quot; column to character, then to numeric
+  teosinte_chr_increasing &lt;- teosinte_chr[order(as.numeric(as.character(teosinte_chr$Position))),]
+  #Create corresponding files based on increasing position and Chromosome &quot;i&quot;
+  teosinte_increasing &lt;- paste(&quot;teosinte/teosinte_increasing_chr&quot;,i,&quot;.txt&quot;, sep=&quot;&quot;)
+  #Export data frame to files corresponding to each Chromosome &quot;i&quot; and based on increasing position values
+  write.table(teosinte_chr_increasing,file= teosinte_increasing, row.names = FALSE, sep = &quot;\t&quot;, col.names = TRUE, quote = FALSE)
+  
+#Sort data for each chromosome with SNPs ordered based on decreasing position values and with missing data encoded by this symbol: -
+  
+  #Sort teosinte_chr files based on the &quot;Position&quot; column in decreasing order
+    teosinte_chr_decreasing_position &lt;- mixedsort(as.character(teosinte_chr$Position), decreasing = TRUE)
+  teosinte_chr_decreasing &lt;- teosinte_chr
+  teosinte_chr_decreasing$Position &lt;- teosinte_chr_decreasing_position
+  #Replace &quot;?&quot; with &quot;-&quot;
+  teosinte_chr_decreasing[teosinte_chr_decreasing==&quot;?/?&quot;] &lt;- &quot;-/-&quot;
+  #Create corresponding files based on decreasing position and Chromosome &quot;i&quot;
+  teosinte_decreasing &lt;- paste(&quot;teosinte/teosinte_decreasing_chr&quot;,i,&quot;.txt&quot;, sep=&quot;&quot;)
+  #Export data frame to files corresponding to each Chromosome &quot;i&quot; and based on decreasing position values
+  write.table(teosinte_chr_decreasing,file= teosinte_decreasing, row.names = FALSE, sep = &quot;\t&quot;, col.names = TRUE, quote = FALSE)
+}</code></pre>
+<pre><code>## Warning in order(as.numeric(as.character(teosinte_chr$Position))): NAs
+## introduced by coercion</code></pre>
+<pre><code>## Warning in order(as.numeric(as.character(teosinte_chr$Position))): NAs
+## introduced by coercion
+
+## Warning in order(as.numeric(as.character(teosinte_chr$Position))): NAs
+## introduced by coercion
+
+## Warning in order(as.numeric(as.character(teosinte_chr$Position))): NAs
+## introduced by coercion
+
+## Warning in order(as.numeric(as.character(teosinte_chr$Position))): NAs
+## introduced by coercion</code></pre>
 <p>##Part II: Visualization</p>
 <pre class="r"><code>#SNPs per chromosome
 ##What is the distribution of SNPs on and across chromosomes? Are there more SNP positions in maize or teosinte individuals?
@@ -1833,10 +1874,8 @@ SNP_ID &lt;- 1:nrow(maize_teosinte_snp)
 SNP_Data &lt;- ifelse(maize_teosinte_snp$Genotype == &quot;AA&quot;, &quot;Homozygous&quot;, 
                    ifelse(maize_teosinte_snp$Genotype == &quot;BB&quot;, &quot;Homozygous&quot;,
                           ifelse(maize_teosinte_snp$Genotype == &quot;AB&quot;, &quot;Heterozygous&quot;, 
-                                 &quot;Missing&quot;)))
-
-
-# Subset vectors to match the length of Chromosome and Position
+                                 &quot;Missing&quot;)))</code></pre>
+<pre class="r"><code># Subset vectors to match the length of Chromosome and Position
 Chromosome &lt;- Chromosome[1:n]
 Position &lt;- Position[1:n]
 SNP_ID &lt;- SNP_ID[1:n]
